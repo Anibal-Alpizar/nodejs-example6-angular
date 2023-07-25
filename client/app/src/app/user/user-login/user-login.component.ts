@@ -16,6 +16,7 @@ export class UserLoginComponent implements OnInit {
   hide = true;
   formulario: FormGroup;
   makeSubmit: boolean = false;
+
   infoUsuario: any;
   constructor(
     public fb: FormBuilder,
@@ -40,14 +41,23 @@ export class UserLoginComponent implements OnInit {
   mensajes() {
     // user register successfully
     let register = false;
+    let auth = '';
     // get url parameters
     this.route.queryParams.subscribe((params) => {
       register = params['register'] === 'true' || false;
+      auth = params['auth'] || '';
       if (register) {
         this.notificacion.mensaje(
           'Usuario',
           'Usuaio registrado! Especifique sus credenciales',
           TipoMessage.success
+        );
+      }
+      if (auth) {
+        this.notificacion.mensaje(
+          'Usuario',
+          'Debe autenticarse para acceder a esta página',
+          TipoMessage.warning
         );
       }
     });

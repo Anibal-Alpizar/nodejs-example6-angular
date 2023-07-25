@@ -4,22 +4,27 @@ import { VideojuegoIndexComponent } from './videojuego-index/videojuego-index.co
 import { VideojuegoAllComponent } from './videojuego-all/videojuego-all.component';
 import { VideojuegoDetailComponent } from './videojuego-detail/videojuego-detail.component';
 import { VideojuegoFormComponent } from './videojuego-form/videojuego-form.component';
- //locahost:3000/videojuego/all
+import { AuthGuard } from '../share/guards/auth.guard';
+//locahost:3000/videojuego/all
 const routes: Routes = [
-  {path:'videojuego', component: VideojuegoIndexComponent}, 
+  {
+    path: 'videojuego',
+    component: VideojuegoIndexComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] },
+  },
 
-  {path:'videojuego/all', component: VideojuegoAllComponent},
+  { path: 'videojuego/all', component: VideojuegoAllComponent },
 
-  {path:'videojuego/create', component: VideojuegoFormComponent},
+  { path: 'videojuego/create', component: VideojuegoFormComponent },
 
-  {path:'videojuego/:id', component: VideojuegoDetailComponent},
+  { path: 'videojuego/:id', component: VideojuegoDetailComponent },
 
-  {path:'videojuego/update/:id', component: VideojuegoFormComponent},
-  
+  { path: 'videojuego/update/:id', component: VideojuegoFormComponent },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class VideojuegoRoutingModule { }
+export class VideojuegoRoutingModule {}
