@@ -1,9 +1,9 @@
-const { PrismaClient } = require("@prisma/client");
+const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-const { Role } = require("@prisma/client");
-const jwt = require("jsonwebtoken");
+const { Role } = require('@prisma/client');
+const jwt = require('jsonwebtoken');
 //--npm install bcrypt
-const bcrypt = require("bcrypt");
+const bcrypt = require('bcrypt');
 
 //Crear nuevo usuario
 module.exports.register = async (request, response, next) => {
@@ -12,17 +12,21 @@ module.exports.register = async (request, response, next) => {
   //Salt es una cadena aleatoria.
   //"salt round" factor de costo controla cuánto tiempo se necesita para calcular un solo hash de BCrypt
   // salt es un valor aleatorio y debe ser diferente para cada cálculo, por lo que el resultado casi nunca debe ser el mismo, incluso para contraseñas iguales
-  
+  let salt = bcrypt.genSaltSync(10);
   // Hash password
-  
+  let hash = bcrypt.hashSync(userData.password, salt);
+
   const user = await prisma.usuario.create({
     data: {
-      
+      nombre: userData.nombre,
+      email: userData.email,
+      password: hash,
+      role: Role[userData.role],
     },
   });
   response.status(200).json({
     status: true,
-    message: "Usuario creado",
+    message: 'Usuario creado',
     data: user,
   });
 };
@@ -38,10 +42,32 @@ module.exports.login = async (request, response, next) => {
   if (!user) {
     response.status(401).send({
       success: false,
-      message: "Usuario no registrado",
+      message: 'Usuario no registrado',
     });
   }
   //Verifica la contraseña
-  
+  const checkPassword = await bcrypt.compare(userReq.password, user.password);
+  if (!checkPassword === false) {
+    response.status(401).send({
+      success: false,
+      message: 'Credenciales incorrectas',
+    });
+  } else {
+    const payload = {
+      email: user.email,
+      role: user.role,
+    };
+    //Genera el token
+    const token = jwt.sign(payload, process.env.SECRET_KEY, {
+      expiresIn: process.env.JWT_EXPIRE,
+    });
+    response.status(200).send({
+      success: true,
+      message: 'Usuario logueado',
+      data: {
+        user,
+        token,
+      },
+    });
+  }
 };
-
