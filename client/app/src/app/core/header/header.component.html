@@ -38,17 +38,17 @@
      <mat-icon>shopping_cart</mat-icon>
    </button> |   
     <!--Usuario-->
-    <span class="mat-caption" *ngIf="isAutenticated">{{currentUser.email}}</span>
+    <span class="mat-caption" *ngIf="isAutenticated">{{currentUser.user.email}}</span>
     <button mat-icon-button [matMenuTriggerFor]="menu3">
       <mat-icon [ngStyle]="{'color': isAutenticated ? 'white': '#9E9E9E' }">person</mat-icon>
     </button>
     <!--Menu usuario-->
     <mat-menu #menu3="matMenu">
-      <a mat-menu-item *ngIf="!(isAutenticated)">
+      <a mat-menu-item *ngIf="!(isAutenticated)" (click)="login()">
         <mat-icon>person_add</mat-icon>
         <span>Login</span>
       </a>
-      <a mat-menu-item *ngIf="isAutenticated">
+      <a mat-menu-item *ngIf="isAutenticated" (click)="logout()">
         <mat-icon>person_remove</mat-icon>
         <span>Logout</span>
       </a>

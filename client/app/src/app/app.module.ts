@@ -10,8 +10,9 @@ import { HomeModule } from './home/home.module';
 import { UserModule } from './user/user.module';
 import { VideojuegoModule } from './videojuego/videojuego.module';
 import { ToastrModule } from 'ngx-toastr';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { OrdenModule } from './orden/orden.module';
+import { HttpErrorInterceptorService } from './share/http-error-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,10 @@ import { OrdenModule } from './orden/orden.module';
     AppRoutingModule   
    
   ],
-  providers: [],
+  providers: [{
+    provide: HTTP_INTERCEPTORS,
+    useClass: HttpErrorInterceptorService, multi: true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
